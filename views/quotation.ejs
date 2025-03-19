@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quotations</title>
+    <link rel="stylesheet" href="/stylesheets/quotation.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0">Create New Quotation</h2>
+        </div>
+        <div class="card-body">
+          <form action="/quotation" method="POST" class="quotation-form">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="quotationNumber" class="form-label fw-bold"
+                    >Quotation Number:</label
+                  >
+                  <input
+                    type="number"
+                    id="quotationNumber"
+                    name="quotationNumber"
+                    class="form-control"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="date" class="form-label fw-bold">Date:</label>
+                  <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    class="form-control"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="consigneeName" class="form-label fw-bold"
+                    >Consignee Name:</label
+                  >
+                  <select
+                    id="consigneeName"
+                    name="consigneeName"
+                    class="form-select"
+                    required
+                    onchange="fillConsigneeDetails()"
+                  >
+                    <option value="">Select Consignee</option>
+                    <% consignees.forEach(consignee => { %>
+                    <option
+                      value="<%= consignee.id %>"
+                      data-address="<%= consignee.consigneeAddress %>"
+                      data-country-id="<%= consignee.countryId %>"
+                    >
+                      <%= consignee.consigneeName %>
+                    </option>
+                    <% }) %>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="consigneeAddress" class="form-label fw-bold"
+                    >Consignee Address:</label
+                  >
+                  <input
+                    type="text"
+                    id="consigneeAddress"
+                    name="consigneeAddress"
+                    class="form-control bg-light"
+                    required
+                    readonly
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="countryId" class="form-label fw-bold"
+                    >Country:</label
+                  >
+                  <select
+                    id="countryId"
+                    name="countryId"
+                    class="form-select"
+                    required
+                  >
+                    <% countries.forEach(country => { %>
+                    <option value="<%= country.id %>">
+                      <%= country.countryName %>
+                    </option>
+                    <% }) %>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="currencyId" class="form-label fw-bold"
+                    >Currency:</label
+                  >
+                  <select
+                    id="currencyId"
+                    name="currencyId"
+                    class="form-select"
+                    required
+                  >
+                    <% currencies.forEach(currency => { %>
+                    <option value="<%= currency.id %>">
+                      <%= currency.currency %>
+                    </option>
+                    <% }) %>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="conversionRate" class="form-label fw-bold"
+                    >Conversion Rate:</label
+                  >
+                  <input
+                    type="number"
+                    step="0.01"
+                    id="conversionRate"
+                    name="conversionRate"
+                    class="form-control"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for="portId" class="form-label fw-bold"
+                    >Port Name:</label
+                  >
+                  <select
+                    id="portId"
+                    name="portId"
+                    class="form-select"
+                    required
+                  >
+                    <% ports.forEach(port => { %>
+                    <option value="<%= port.id %>"><%= port.portName %></option>
+                    <% }) %>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <h3 class="mt-4 text-success">Product Details</h3>
+            <div id="productDetailsContainer" class="mb-4">
+              <div class="productDetail card p-3 mb-3 border-success">
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="productDetailId" class="form-label fw-bold"
+                        >Select Product:</label
+                      >
+                      <select
+                        id="productDetailId"
+                        name="productDetails[0][productDetailId]"
+                        class="form-select"
+                        required
+                      >
+                        <% products.forEach(product => { %>
+                        <option value="<%= product.id %>">
+                          <%= product.productName %>
+                        </option>
+                        <% product.Variants.forEach(variant => { %>
+                        <option value="<%= variant.id %>">
+                          <%= product.productName %> - <%= variant.variantName
+                          %>
+                        </option>
+                        <% }) %> <% }) %>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="variantId" class="form-label fw-bold"
+                        >Variant:</label
+                      >
+                      <select
+                        id="variantId"
+                        name="productDetails[0][variantId]"
+                        class="form-select"
+                        required
+                      >
+                        <% products.forEach(product => { %> <%
+                        product.Variants.forEach(variant => { %>
+                        <option value="<%= variant.id %>">
+                          <%= variant.variantName %>
+                        </option>
+                        <% }) %> <% }) %>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="unit" class="form-label fw-bold">Unit:</label>
+                      <select
+                        id="unit"
+                        name="productDetails[0][unit]"
+                        class="form-select"
+                        required
+                      >
+                        <option value="MT(KG)">MT(KG)</option>
+                        <option value="LT(ML)">LT(ML)</option>
+                        <option value="TON">TON</option>
+                        <option value="Pieces">Pieces</option>
+                        <option value="KG(KG)">KG(KG)</option>
+                        <option value="BOTTLES(KG)">BOTTLES(KG)</option>
+                        <option value="JAR(GM)">JAR(GM)</option>
+                        <option value="CAN(KG)">CAN(KG)</option>
+                        <option value="BOX(GM)">BOX(GM)</option>
+                        <option value="PCS(KG)">PCS(KG)</option>
+                        <option value="BAGS(KG)">BAGS(KG)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="quantity" class="form-label fw-bold"
+                        >Quantity:</label
+                      >
+                      <input
+                        type="number"
+                        step="0.01"
+                        id="quantity"
+                        name="productDetails[0][quantity]"
+                        class="form-control"
+                        required
+                        oninput="calculateTotalPrice(this)"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="price" class="form-label fw-bold"
+                        >Price:</label
+                      >
+                      <input
+                        type="number"
+                        step="0.01"
+                        id="price"
+                        name="productDetails[0][price]"
+                        class="form-control"
+                        required
+                        oninput="calculateTotalPrice(this)"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="totalPrice" class="form-label fw-bold"
+                        >Total Price:</label
+                      >
+                      <input
+                        type="number"
+                        step="0.01"
+                        id="totalPrice"
+                        name="productDetails[0][totalPrice]"
+                        class="form-control bg-light"
+                        required
+                        readonly
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="selectPackage" class="form-label fw-bold"
+                        >Select Package:</label
+                      >
+                      <select
+                        id="selectPackage"
+                        name="productDetails[0][packageId]"
+                        class="form-select"
+                        required
+                        onchange="updatePackageDetails(this)"
+                      >
+                        <% packages.forEach(package => { %>
+                        <option
+                          value="<%= package.id %>"
+                          data-net-weight="<%= package.netWeight %>"
+                          data-gross-weight="<%= package.grossWeight %>"
+                        >
+                          <%= package.unit %> - <%= package.netWeight %> - <%=
+                          package.grossWeight %>
+                        </option>
+                        <% }) %>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="netWeight" class="form-label fw-bold"
+                        >Net Weight:</label
+                      >
+                      <input
+                        type="number"
+                        step="0.01"
+                        id="netWeight"
+                        name="productDetails[0][netWeight]"
+                        class="form-control bg-light"
+                        required
+                        readonly
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="grossWeight" class="form-label fw-bold"
+                        >Gross Weight:</label
+                      >
+                      <input
+                        type="number"
+                        step="0.01"
+                        id="grossWeight"
+                        name="productDetails[0][grossWeight]"
+                        class="form-control bg-light"
+                        required
+                        readonly
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label for="totalPackages" class="form-label fw-bold"
+                        >Total Packages:</label
+                      >
+                      <input
+                        type="number"
+                        id="totalPackages"
+                        name="productDetails[0][totalPackages]"
+                        class="form-control bg-light"
+                        required
+                        readonly
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-3 d-flex align-items-end">
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger remove-btn w-100"
+                      onclick="removeProductDetail(this)"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-outline-primary mb-4"
+              onclick="addProductDetail()"
+            >
+              <i class="bi bi-plus-lg"></i> Add Another Product Detail
+            </button>
+
+            <div class="row g-3 bg-light p-3 rounded">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label
+                    for="totalNetWeight"
+                    class="form-label fw-bold text-info"
+                    >Total Net Weight:</label
+                  >
+                  <input
+                    type="number"
+                    step="0.01"
+                    id="totalNetWeight"
+                    name="totalNetWeight"
+                    class="form-control bg-white"
+                    required
+                    readonly
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label
+                    for="totalGrossWeight"
+                    class="form-label fw-bold text-info"
+                    >Total Gross Weight:</label
+                  >
+                  <input
+                    type="number"
+                    step="0.01"
+                    id="totalGrossWeight"
+                    name="totalGrossWeight"
+                    class="form-control bg-white"
+                    required
+                    readonly
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label
+                    for="grandTotal"
+                    class="form-label fw-bold text-success"
+                    >Grand Total:</label
+                  >
+                  <input
+                    type="number"
+                    step="0.01"
+                    id="grandTotal"
+                    name="grandTotal"
+                    class="form-control bg-white"
+                    required
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg mt-4 w-100">
+              Create Quotation
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <h1 class="text-center my-5 text-primary">Quotations List</h1>
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th>Quotation Number</th>
+                  <th>Date</th>
+                  <th>Consignee Name</th>
+                  <th>Consignee Address</th>
+                  <th>Country</th>
+                  <th>Currency</th>
+                  <th>Conversion Rate</th>
+                  <th>Port Name</th>
+                  <th>Total Net Weight</th>
+                  <th>Total Gross Weight</th>
+                  <th>Grand Total</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% quotations.forEach(quotation => { %>
+                <tr>
+                  <td><%= quotation.quotationNumber %></td>
+                  <td><%= quotation.date %></td>
+                  <td><%= quotation.Consignee.consigneeName %></td>
+                  <td><%= quotation.Consignee.consigneeAddress %></td>
+                  <td><%= quotation.Country.countryName %></td>
+                  <td><%= quotation.Currency.currency %></td>
+                  <td><%= quotation.conversionRate %></td>
+                  <td><%= quotation.Port.portName %></td>
+                  <td><%= quotation.totalNetWeight %></td>
+                  <td><%= quotation.totalGrossWeight %></td>
+                  <td class="fw-bold text-success">
+                    <%= quotation.grandTotal %>
+                  </td>
+                  <td>
+                    <div class="btn-group" role="group">
+                      <a
+                        href="/quotations/edit/<%= quotation.id %>"
+                        class="btn btn-outline-warning btn-sm"
+                        >Edit</a
+                      >
+                      <form
+                        action="/quotation/<%= quotation.id %>?_method=DELETE"
+                        method="POST"
+                        style="display: inline"
+                      >
+                        <button
+                          type="submit"
+                          class="btn btn-outline-danger btn-sm"
+                        >
+                          Delete
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      let productDetailIndex = 1;
+
+      function addProductDetail() {
+        const container = document.getElementById("productDetailsContainer");
+        const newProductDetail = document.createElement("div");
+        newProductDetail.classList.add(
+          "productDetail",
+          "card",
+          "p-3",
+          "mb-3",
+          "border-success"
+        );
+        newProductDetail.innerHTML = `
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="productDetailId" class="form-label fw-bold">Select Product:</label>
+                <select id="productDetailId" name="productDetails[${productDetailIndex}][productDetailId]" class="form-select" required>
+                  <% products.forEach(product => { %>
+                    <option value="<%= product.id %>"><%= product.productName %></option>
+                    <% product.Variants.forEach(variant => { %>
+                      <option value="<%= variant.id %>"><%= product.productName %> - <%= variant.variantName %></option>
+                    <% }) %>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="variantId" class="form-label fw-bold">Variant:</label>
+                <select id="variantId" name="productDetails[${productDetailIndex}][variantId]" class="form-select" required>
+                  <% products.forEach(product => { %>
+                    <% product.Variants.forEach(variant => { %>
+                      <option value="<%= variant.id %>"><%= variant.variantName %></option>
+                    <% }) %>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="unit" class="form-label fw-bold">Unit:</label>
+                <select id="unit" name="productDetails[${productDetailIndex}][unit]" class="form-select" required>
+                  <option value="MT(KG)">MT(KG)</option>
+                  <option value="LT(ML)">LT(ML)</option>
+                  <option value="TON">TON</option>
+                  <option value="Pieces">Pieces</option>
+                  <option value="KG(KG)">KG(KG)</option>
+                  <option value="BOTTLES(KG)">BOTTLES(KG)</option>
+                  <option value="JAR(GM)">JAR(GM)</option>
+                  <option value="CAN(KG)">CAN(KG)</option>
+                  <option value="BOX(GM)">BOX(GM)</option>
+                  <option value="PCS(KG)">PCS(KG)</option>
+                  <option value="BAGS(KG)">BAGS(KG)</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="quantity" class="form-label fw-bold">Quantity:</label>
+                <input type="number" step="0.01" id="quantity" name="productDetails[${productDetailIndex}][quantity]" class="form-control" required oninput="calculateTotalPrice(this)">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="price" class="form-label fw-bold">Price:</label>
+                <input type="number" step="0.01" id="price" name="productDetails[${productDetailIndex}][price]" class="form-control" required oninput="calculateTotalPrice(this)">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="totalPrice" class="form-label fw-bold">Total Price:</label>
+                <input type="number" step="0.01" id="totalPrice" name="productDetails[${productDetailIndex}][totalPrice]" class="form-control bg-light" required readonly>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="selectPackage" class="form-label fw-bold">Select Package:</label>
+                <select id="selectPackage" name="productDetails[${productDetailIndex}][packageId]" class="form-select" required onchange="updatePackageDetails(this)">
+                  <% packages.forEach(package => { %>
+                    <option value="<%= package.id %>" data-net-weight="<%= package.netWeight %>" data-gross-weight="<%= package.grossWeight %>"><%= package.unit %> - <%= package.netWeight %> - <%= package.grossWeight %></option>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="netWeight" class="form-label fw-bold">Net Weight:</label>
+                <input type="number" step="0.01" id="netWeight" name="productDetails[${productDetailIndex}][netWeight]" class="form-control bg-light" required readonly>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="grossWeight" class="form-label fw-bold">Gross Weight:</label>
+                <input type="number" step="0.01" id="grossWeight" name="productDetails[${productDetailIndex}][grossWeight]" class="form-control bg-light" required readonly>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="totalPackages" class="form-label fw-bold">Total Packages:</label>
+                <input type="number" id="totalPackages" name="productDetails[${productDetailIndex}][totalPackages]" class="form-control bg-light" required readonly>
+              </div>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+              <button type="button" class="btn btn-outline-danger remove-btn w-100" onclick="removeProductDetail(this)">Remove</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(newProductDetail);
+        productDetailIndex++;
+      }
+
+      function removeProductDetail(button) {
+        const productDetail = button.parentElement.parentElement.parentElement;
+        productDetail.remove();
+        updateTotalWeightsAndPackages();
+      }
+
+      function fillConsigneeDetails() {
+        const consigneeSelect = document.getElementById("consigneeName");
+        const selectedOption =
+          consigneeSelect.options[consigneeSelect.selectedIndex];
+        const address = selectedOption.getAttribute("data-address");
+        const countryId = selectedOption.getAttribute("data-country-id");
+        document.getElementById("consigneeAddress").value = address;
+        document.getElementById("countryId").value = countryId;
+      }
+
+      function calculateTotalPrice(element) {
+        const productDetail = element.closest(".productDetail");
+        const quantity = productDetail.querySelector(
+          '[name*="[quantity]"]'
+        ).value;
+        const price = productDetail.querySelector('[name*="[price]"]').value;
+        const totalPrice = productDetail.querySelector(
+          '[name*="[totalPrice]"]'
+        );
+        totalPrice.value = (quantity * price).toFixed(2);
+        updatePackageDetails(
+          productDetail.querySelector('[name*="[packageId]"]')
+        );
+      }
+
+      function updatePackageDetails(selectElement) {
+        const productDetail = selectElement.closest(".productDetail");
+        const selectedOption =
+          selectElement.options[selectElement.selectedIndex];
+        const netWeightPerPackage = parseFloat(
+          selectedOption.getAttribute("data-net-weight")
+        );
+        const grossWeightPerPackage = parseFloat(
+          selectedOption.getAttribute("data-gross-weight")
+        );
+        const quantity = parseFloat(
+          productDetail.querySelector('[name*="[quantity]"]').value
+        );
+
+        const totalNetWeight = productDetail.querySelector(
+          '[name*="[netWeight]"]'
+        );
+        const totalGrossWeight = productDetail.querySelector(
+          '[name*="[grossWeight]"]'
+        );
+        const totalPackages = productDetail.querySelector(
+          '[name*="[totalPackages]"]'
+        );
+
+        totalNetWeight.value = (netWeightPerPackage * quantity).toFixed(2);
+        totalGrossWeight.value = (grossWeightPerPackage * quantity).toFixed(2);
+        totalPackages.value = quantity;
+
+        updateTotalWeightsAndPackages();
+      }
+
+      function updateTotalWeightsAndPackages() {
+        let totalNetWeight = 0;
+        let totalGrossWeight = 0;
+        let grandTotal = 0;
+
+        document.querySelectorAll(".productDetail").forEach((productDetail) => {
+          totalNetWeight +=
+            parseFloat(
+              productDetail.querySelector('[name*="[netWeight]"]').value
+            ) || 0;
+          totalGrossWeight +=
+            parseFloat(
+              productDetail.querySelector('[name*="[grossWeight]"]').value
+            ) || 0;
+          grandTotal +=
+            parseFloat(
+              productDetail.querySelector('[name*="[totalPrice]"]').value
+            ) || 0;
+        });
+
+        document.getElementById("totalNetWeight").value =
+          totalNetWeight.toFixed(2);
+        document.getElementById("totalGrossWeight").value =
+          totalGrossWeight.toFixed(2);
+        document.getElementById("grandTotal").value = grandTotal.toFixed(2);
+      }
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Package Management</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/stylesheets/package.css" />
+  </head>
+  <body>
+    <div class="container mt-4">
+      <h1 class="mb-4">Package Management</h1>
+      <button class="btn btn-primary mb-3" onclick="openForm()">
+        Create New Package
+      </button>
+
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>Unit</th>
+              <th>Net Weight</th>
+              <th>Gross Weight</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% packages.forEach(package => { %>
+            <tr data-id="<%= package.id %>">
+              <td class="unit"><%= package.unit %></td>
+              <td class="netWeight"><%= package.netWeight %></td>
+              <td class="grossWeight"><%= package.grossWeight %></td>
+              <td>
+                <button
+                  class="btn btn-sm btn-warning me-2"
+                  onclick="openForm('<%= JSON.stringify(package) %>')"
+                >
+                  Edit
+                </button>
+                <form
+                  action="/package/delete/<%= package.id %>?_method=DELETE"
+                  method="POST"
+                  style="display: inline"
+                  onsubmit="deletePackage(event, this.action)"
+                >
+                  <button type="submit" class="btn btn-sm btn-danger">
+                    Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="packageForm" class="modal fade" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 id="formTitle" class="modal-title">Create Package</h2>
+            <button
+              type="button"
+              class="btn-close"
+              onclick="closeForm()"
+              aria-label="Close"
+            ></button>
+          </div>
+          <form id="formAction" method="POST" onsubmit="submitForm(event)">
+            <div class="modal-body">
+              <input
+                type="hidden"
+                id="formMethod"
+                name="_method"
+                value="POST"
+              />
+              <input type="hidden" id="packageId" name="id" />
+
+              <div class="mb-3">
+                <label for="unit" class="form-label">Unit:</label>
+                <select id="unit" name="unit" class="form-select" required>
+                  <option value="MT (KG)">MT (KG)</option>
+                  <option value="LT (ML)">LT (ML)</option>
+                  <option value="TON">TON</option>
+                  <option value="Pieces">Pieces</option>
+                  <option value="KG (KG)">KG (KG)</option>
+                  <option value="BOTTLES (KG)">BOTTLES (KG)</option>
+                  <option value="JAR (GM)">JAR (GM)</option>
+                  <option value="CAN (KG)">CAN (KG)</option>
+                  <option value="BOX (GM)">BOX (GM)</option>
+                  <option value="PCS (KG)">PCS (KG)</option>
+                  <option value="BAGS (KG)">BAGS (KG)</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="netWeight" class="form-label">Net Weight:</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  id="netWeight"
+                  name="netWeight"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="grossWeight" class="form-label"
+                  >Gross Weight:</label
+                >
+                <input
+                  type="number"
+                  step="0.01"
+                  id="grossWeight"
+                  name="grossWeight"
+                  class="form-control"
+                  required
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">
+                Save Package
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeForm()"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and your existing script -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      function openForm(packageData) {
+        const modal = new bootstrap.Modal(
+          document.getElementById("packageForm")
+        );
+        const form = document.getElementById("formAction");
+
+        if (packageData) {
+          packageData = JSON.parse(packageData);
+          document.getElementById("formTitle").innerText = "Edit Package";
+          document.getElementById("packageId").value = packageData.id;
+          document.getElementById("unit").value = packageData.unit;
+          document.getElementById("netWeight").value = packageData.netWeight;
+          document.getElementById("grossWeight").value =
+            packageData.grossWeight;
+          document.getElementById("formMethod").value = "PUT";
+          form.action = `/package/edit/${packageData.id}`;
+        } else {
+          document.getElementById("formTitle").innerText = "Create Package";
+          document.getElementById("packageId").value = "";
+          document.getElementById("unit").value = "";
+          document.getElementById("netWeight").value = "";
+          document.getElementById("grossWeight").value = "";
+          document.getElementById("formMethod").value = "POST";
+          form.action = "/package/create-package";
+        }
+        modal.show();
+      }
+
+      function closeForm() {
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("packageForm")
+        );
+        modal.hide();
+      }
+
+      function confirmDelete(event) {
+        if (!confirm("Are you sure you want to delete this package?")) {
+          event.preventDefault();
+        }
+      }
+
+      function submitForm(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const method = document.getElementById("formMethod").value;
+        const url = form.action;
+
+        const jsonData = Object.fromEntries(formData.entries());
+        delete jsonData["_method"];
+
+        fetch(url, {
+          method: method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(jsonData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              closeForm();
+              if (method === "POST") {
+                addTableRow(data.package);
+              } else {
+                updateTableRow(data.package);
+              }
+            } else {
+              alert(data.message);
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+
+      function deletePackage(event, url) {
+        event.preventDefault();
+        if (confirm("Are you sure you want to delete this package?")) {
+          fetch(url, {
+            method: "DELETE",
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                removeTableRow(data.packageId);
+              } else {
+                alert(data.message);
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        }
+      }
+
+      function addTableRow(package) {
+        const tableBody = document.querySelector("tbody");
+        const row = document.createElement("tr");
+        row.setAttribute("data-id", package.id);
+        row.innerHTML = `
+          <td class="unit">${package.unit}</td>
+          <td class="netWeight">${package.netWeight}</td>
+          <td class="grossWeight">${package.grossWeight}</td>
+          <td>
+            <button class="btn btn-sm btn-warning me-2" onclick="openForm('${JSON.stringify(
+              package
+            )}')">Edit</button>
+            <form action="/package/delete/${
+              package.id
+            }?_method=DELETE" method="POST" style="display: inline" onsubmit="deletePackage(event, this.action)">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      }
+
+      function updateTableRow(package) {
+        const row = document.querySelector(`tr[data-id='${package.id}']`);
+        if (row) {
+          row.querySelector(".unit").textContent = package.unit;
+          row.querySelector(".netWeight").textContent = package.netWeight;
+          row.querySelector(".grossWeight").textContent = package.grossWeight;
+        } else {
+          location.reload();
+        }
+      }
+
+      function removeTableRow(packageId) {
+        const row = document.querySelector(`tr[data-id='${packageId}']`);
+        if (row) {
+          row.remove();
+        } else {
+          location.reload();
+        }
+      }
+    </script>
+  </body>
+</html>

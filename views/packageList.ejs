@@ -1,0 +1,44 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Package List</title>
+    <link rel="stylesheet" href="/stylesheets/packageList.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Package List</h1>
+      <a href="/package/create-package">Create New Package</a>
+      <table>
+        <thead>
+          <tr>
+            <th>Unit</th>
+            <th>Net Weight</th>
+            <th>Gross Weight</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% packages.forEach(package => { %>
+          <tr>
+            <td><%= package.unit %></td>
+            <td><%= package.netWeight %></td>
+            <td><%= package.grossWeight %></td>
+            <td>
+              <a href="/package/edit/<%= package.id %>">Edit</a>
+              <form
+                action="/package/delete/<%= package.id %>?_method=DELETE"
+                method="POST"
+                style="display: inline"
+              >
+                <button type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html> -->

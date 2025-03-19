@@ -1,0 +1,115 @@
+/* Reset default styles */
+body,
+h1,
+table,
+th,
+td,
+a,
+button {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Center the content */
+body {
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Container styling */
+.container {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 600px;
+  text-align: center;
+}
+
+/* Heading */
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+/* Table header */
+thead {
+  background-color: #28a745;
+  color: white;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+/* Alternating row colors */
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Edit & Delete Buttons */
+a,
+button {
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* Edit Link */
+a {
+  background-color: #007bff;
+  color: white;
+  margin-right: 5px;
+  display: inline-block;
+}
+
+/* Delete Button */
+button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+}
+
+/* Hover Effects */
+a:hover {
+  background-color: #0056b3;
+}
+
+button:hover {
+  background-color: #c82333;
+}
+
+/* Create New Unit Button */
+.container a:last-child {
+  display: block;
+  margin-top: 20px;
+  background-color: #28a745;
+  color: white;
+  padding: 10px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 5px;
+}
+
+.container a:last-child:hover {
+  background-color: #218838;
+}

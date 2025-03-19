@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unit Management</title>
+    <link rel="stylesheet" href="/stylesheets/unit.css" />
+    <script>
+      function openForm(unitData) {
+        document.getElementById("unitForm").style.display = "block";
+        const form = document.getElementById("formAction");
+
+        if (unitData) {
+          unitData = JSON.parse(unitData);
+          document.getElementById("formTitle").innerText = "Edit Unit";
+          document.getElementById("unitId").value = unitData.id;
+          document.getElementById("orderUnit").value = unitData.orderUnit;
+          document.getElementById("packingUnit").value = unitData.packingUnit;
+          document.getElementById("weight").value = unitData.weight;
+          document.getElementById("formMethod").value = "PUT";
+          form.action = `/unit/edit/${unitData.id}`;
+        } else {
+          document.getElementById("formTitle").innerText = "Create Unit";
+          document.getElementById("unitId").value = "";
+          document.getElementById("orderUnit").value = "";
+          document.getElementById("packingUnit").value = "";
+          document.getElementById("weight").value = "";
+          document.getElementById("formMethod").value = "POST";
+          form.action = "/unit/create-unit";
+        }
+      }
+
+      function closeForm() {
+        document.getElementById("unitForm").style.display = "none";
+      }
+
+      function confirmDelete(event) {
+        if (!confirm("Are you sure you want to delete this unit?")) {
+          event.preventDefault();
+        }
+      }
+
+      function submitForm(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const method = document.getElementById("formMethod").value;
+        const url = form.action;
+
+        const jsonData = Object.fromEntries(formData.entries());
+        delete jsonData["_method"];
+
+        fetch(url, {
+          method: method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(jsonData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              closeForm();
+              if (method === "POST") {
+                addTableRow(data.unit);
+              } else {
+                updateTableRow(data.unit);
+              }
+            } else {
+              alert(data.message);
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+
+      function deleteUnit(event, url) {
+        event.preventDefault();
+        if (confirm("Are you sure you want to delete this unit?")) {
+          fetch(url, {
+            method: "DELETE",
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                removeTableRow(data.unitId);
+              } else {
+                alert(data.message);
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        }
+      }
+
+      function addTableRow(unit) {
+        const tableBody = document.querySelector("tbody");
+        const row = document.createElement("tr");
+        row.setAttribute("data-id", unit.id);
+        row.innerHTML = `
+          <td class="orderUnit">${unit.orderUnit}</td>
+          <td class="packingUnit">${unit.packingUnit}</td>
+          <td class="weight">${unit.weight}</td>
+          <td>
+            <button onclick="openForm('${JSON.stringify(unit)}')">Edit</button>
+            <form action="/unit/delete/${
+              unit.id
+            }?_method=DELETE" method="POST" style="display: inline" onsubmit="deleteUnit(event, this.action)">
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      }
+
+      function updateTableRow(unit) {
+        const row = document.querySelector(`tr[data-id='${unit.id}']`);
+        if (row) {
+          row.querySelector(".orderUnit").textContent = unit.orderUnit;
+          row.querySelector(".packingUnit").textContent = unit.packingUnit;
+          row.querySelector(".weight").textContent = unit.weight;
+        } else {
+          location.reload();
+        }
+      }
+
+      function removeTableRow(unitId) {
+        const row = document.querySelector(`tr[data-id='${unitId}']`);
+        if (row) {
+          row.remove();
+        } else {
+          location.reload();
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Unit Management</h1>
+      <button id="openFormButton" onclick="openForm()">Create New Unit</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Order Unit</th>
+            <th>Packing Unit</th>
+            <th>Weight</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% units.forEach(unit => { %>
+          <tr data-id="<%= unit.id %>">
+            <td class="orderUnit"><%= unit.orderUnit %></td>
+            <td class="packingUnit"><%= unit.packingUnit %></td>
+            <td class="weight"><%= unit.weight %></td>
+            <td>
+              <button onclick="openForm('<%= JSON.stringify(unit) %>')">
+                Edit
+              </button>
+              <form
+                action="/unit/delete/<%= unit.id %>?_method=DELETE"
+                method="POST"
+                style="display: inline"
+                onsubmit="deleteUnit(event, this.action)"
+              >
+                <button type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="unitForm" style="display: none">
+      <h2 id="formTitle">Create Unit</h2>
+      <form id="formAction" method="POST" onsubmit="submitForm(event)">
+        <input type="hidden" id="formMethod" name="_method" value="POST" />
+        <input type="hidden" id="unitId" name="id" />
+        <div class="form-group">
+          <label for="orderUnit">Order Unit:</label>
+          <input type="text" id="orderUnit" name="orderUnit" required />
+        </div>
+        <div class="form-group">
+          <label for="packingUnit">Packing Unit:</label>
+          <input type="text" id="packingUnit" name="packingUnit" />
+        </div>
+        <div class="form-group">
+          <label for="weight">Weight:</label>
+          <input type="number" step="0.01" id="weight" name="weight" />
+        </div>
+        <button type="submit">Save Unit</button>
+        <button type="button" id="closeFormButton" onclick="closeForm()">
+          Cancel
+        </button>
+      </form>
+    </div>
+  </body>
+</html>

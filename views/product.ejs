@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Upload</title>
+    <link rel="stylesheet" href="/stylesheets/product.css" />
+    <script>
+      function addVariant() {
+        const variantContainer = document.getElementById("variant-container");
+        const variantIndex = variantContainer.children.length;
+
+        const variantDiv = document.createElement("div");
+        variantDiv.classList.add("variant");
+        variantDiv.setAttribute("id", `variant_${variantIndex}`);
+
+        const variantNameLabel = document.createElement("label");
+        variantNameLabel.setAttribute("for", `variantName_${variantIndex}`);
+        variantNameLabel.textContent = "Variant Name:";
+
+        const variantNameInput = document.createElement("input");
+        variantNameInput.setAttribute("type", "text");
+        variantNameInput.setAttribute("id", `variantName_${variantIndex}`);
+        variantNameInput.setAttribute("name", `variantName_${variantIndex}`);
+
+        const variantImageLabel = document.createElement("label");
+        variantImageLabel.setAttribute("for", `variantImage_${variantIndex}`);
+        variantImageLabel.textContent = "Variant Image:";
+
+        const variantImageInput = document.createElement("input");
+        variantImageInput.setAttribute("type", "file");
+        variantImageInput.setAttribute("id", `variantImage_${variantIndex}`);
+        variantImageInput.setAttribute("name", `variantImage_${variantIndex}`);
+
+        const removeButton = document.createElement("button");
+        removeButton.setAttribute("type", "button");
+        removeButton.textContent = "Remove";
+        removeButton.onclick = () => removeVariant(variantIndex);
+
+        variantDiv.appendChild(variantNameLabel);
+        variantDiv.appendChild(variantNameInput);
+        variantDiv.appendChild(variantImageLabel);
+        variantDiv.appendChild(variantImageInput);
+        variantDiv.appendChild(removeButton);
+
+        variantContainer.appendChild(variantDiv);
+      }
+
+      function removeVariant(index) {
+        const variantDiv = document.getElementById(`variant_${index}`);
+        variantDiv.remove();
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Upload Product</h1>
+      <form
+        action="/product/create-product"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" name="productName" required />
+
+        <label for="productImage">Product Image:</label>
+        <input type="file" id="productImage" name="productImage" required />
+
+        <label for="gst">GST:</label>
+        <input type="text" id="gst" name="gst" required />
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description"></textarea>
+
+        <label for="hsnSac">HSN/SAC:</label>
+        <input type="text" id="hsnSac" name="hsnSac" required />
+
+        <label for="inventoryType">Inventory Type:</label>
+        <select id="inventoryType" name="inventoryType" required>
+          <option value="Finished Goods">Finished Goods</option>
+          <option value="Rejection">Rejection</option>
+          <option value="Raw Material">Raw Material</option>
+        </select>
+
+        <label for="productTag">Product Tag:</label>
+        <input type="text" id="productTag" name="productTag" />
+
+        <label for="unit">Unit:</label>
+        <select id="unit" name="unit" required>
+          <option value="MT (KG)">MT (KG)</option>
+          <option value="LT (ML)">LT (ML)</option>
+          <option value="TON">TON</option>
+          <option value="Pieces">Pieces</option>
+          <option value="KG (KG)">KG (KG)</option>
+          <option value="BOTTLES (KG)">BOTTLES (KG)</option>
+          <option value="JAR (GM)">JAR (GM)</option>
+          <option value="CAN (KG)">CAN (KG)</option>
+          <option value="BOX (GM)">BOX (GM)</option>
+          <option value="PCS (KG)">PCS (KG)</option>
+          <option value="BAGS (KG)">BAGS (KG)</option>
+        </select>
+
+        <label for="netWeight">Net Weight:</label>
+        <input type="number" id="netWeight" name="netWeight" required />
+
+        <label for="grossWeight">Gross Weight:</label>
+        <input type="number" id="grossWeight" name="grossWeight" required />
+
+        <label for="dimensionLength">Dimension Length:</label>
+        <input
+          type="number"
+          id="dimensionLength"
+          name="dimensionLength"
+          required
+        />
+
+        <label for="dimensionWidth">Dimension Width:</label>
+        <input
+          type="number"
+          id="dimensionWidth"
+          name="dimensionWidth"
+          required
+        />
+
+        <label for="dimensionHeight">Dimension Height:</label>
+        <input
+          type="number"
+          id="dimensionHeight"
+          name="dimensionHeight"
+          required
+        />
+
+        <label for="sellPrice">Sell Price:</label>
+        <input type="number" id="sellPrice" name="sellPrice" required />
+
+        <div id="variant-container">
+          <h2>Variants</h2>
+          <button type="button" onclick="addVariant()">Add Variant</button>
+        </div>
+
+        <button type="submit">Upload Product</button>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Dropdown</title>
+    <link rel="stylesheet" href="/stylesheets/productDropdown.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Product Dropdown</h1>
+      <select id="product-dropdown">
+        <option value="">Select a product</option>
+        <% products.forEach(product => { %> <% if (product.Variants &&
+        product.Variants.length > 0) { %> <% product.Variants.forEach(variant =>
+        { %>
+        <option value="<%= variant.id %>">
+          <%= product.productName %> -> <%= variant.variantName %>
+        </option>
+        <% }) %> <% } else { %>
+        <option value="<%= product.id %>"><%= product.productName %></option>
+        <% } %> <% }) %>
+      </select>
+    </div>
+  </body>
+</html>

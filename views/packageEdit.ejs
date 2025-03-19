@@ -1,0 +1,41 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Package</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Edit Package</h1>
+      <form action="/package/edit/<%= packageData.id %>?_method=PUT" method="POST">
+        <div class="form-group">
+          <label for="unit">Unit:</label>
+          <select id="unit" name="unit" required>
+            <option value="MT (KG)" <%= packageData.unit === "MT (KG)" ? "selected" : "" %>>MT (KG)</option>
+            <option value="LT (ML)" <%= packageData.unit === "LT (ML)" ? "selected" : "" %>>LT (ML)</option>
+            <option value="TON" <%= packageData.unit === "TON" ? "selected" : "" %>>TON</option>
+            <option value="Pieces" <%= packageData.unit === "Pieces" ? "selected" : "" %>>Pieces</option>
+            <option value="KG (KG)" <%= packageData.unit === "KG (KG)" ? "selected" : "" %>>KG (KG)</option>
+            <option value="BOTTLES (KG)" <%= packageData.unit === "BOTTLES (KG)" ? "selected" : "" %>>BOTTLES (KG)</option>
+            <option value="JAR (GM)" <%= packageData.unit === "JAR (GM)" ? "selected" : "" %>>JAR (GM)</option>
+            <option value="CAN (KG)" <%= packageData.unit === "CAN (KG)" ? "selected" : "" %>>CAN (KG)</option>
+            <option value="BOX (GM)" <%= packageData.unit === "BOX (GM)" ? "selected" : "" %>>BOX (GM)</option>
+            <option value="PCS (KG)" <%= packageData.unit === "PCS (KG)" ? "selected" : "" %>>PCS (KG)</option>
+            <option value="BAGS (KG)" <%= packageData.unit === "BAGS (KG)" ? "selected" : "" %>>BAGS (KG)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="netWeight">Net Weight:</label>
+          <input type="number" step="0.01" id="netWeight" name="netWeight" value="<%= packageData.netWeight %>" required />
+        </div>
+        <div class="form-group">
+          <label for="grossWeight">Gross Weight:</label>
+          <input type="number" step="0.01" id="grossWeight" name="grossWeight" value="<%= packageData.grossWeight %>" required />
+        </div>
+        <button type="submit">Update Package</button>
+      </form>
+    </div>
+  </body>
+</html> -->

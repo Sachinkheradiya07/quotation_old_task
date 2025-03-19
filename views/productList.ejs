@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product List</title>
+    <link rel="stylesheet" href="/stylesheets/productList.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Product List</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>GST</th>
+            <th>HSN/SAC</th>
+            <th>Inventory Type</th>
+            <th>Product Tag</th>
+            <th>Unit</th>
+            <th>Sell Price</th>
+            <th>Variants</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% products.forEach(prod => { %>
+          <tr>
+            <td><%= prod.productName %></td>
+            <td><%= prod.gst %></td>
+            <td><%= prod.hsnSac %></td>
+            <td><%= prod.inventoryType %></td>
+            <td><%= prod.productTag %></td>
+            <td><%= prod.unit %></td>
+            <td><%= prod.sellPrice %></td>
+            <td>
+              <ul>
+                <% prod.Variants.forEach(variant => { %>
+                <li>
+                  <%= variant.variantName %> <% if (variant.variantImage) { %>
+                  <img
+                    src="/uploads/<%= variant.variantImage %>"
+                    alt="<%= variant.variantName %>"
+                    style="width: 50px; height: 50px"
+                  />
+                  <% } %>
+                </li>
+                <% }) %>
+              </ul>
+            </td>
+            <td>
+              <a href="/product/edit/<%= prod.id %>">Edit</a>
+              <form
+                action="/product/delete/<%= prod.id %>?_method=DELETE"
+                method="POST"
+                style="display: inline"
+              >
+                <button type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

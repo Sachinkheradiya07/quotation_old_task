@@ -1,0 +1,43 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unit List</title>
+    <link rel="stylesheet" href="/stylesheets/unitList.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Unit List</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Order Unit</th>
+            <th>Packing Unit</th>
+            <th>Weight</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% units.forEach(unit => { %>
+          <tr>
+            <td><%= unit.orderUnit %></td>
+            <td><%= unit.packingUnit %></td>
+            <td><%= unit.weight %></td>
+            <td>
+              <a href="/unit/edit/<%= unit.id %>">Edit</a>
+              <form
+                action="/unit/delete/<%= unit.id %>?_method=DELETE"
+                method="POST"
+                style="display: inline"
+              >
+                <button type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html> -->
